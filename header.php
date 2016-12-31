@@ -30,10 +30,12 @@ session_start();
 					<ul id=nav>
 						<li><a  href="oNama.php" >O nama</a></li>
 						<li><a  href="popularno.php" >Popularno</a></li>
-						<li><a 	href="feedback.php" >Feedback</a></li>
             <?php
               if(isset($_SESSION['logged_in']) && $_SESSION['logged_in']==true){
                   print "<li><a  href='opcijeAdmin.php' > Opcije</a></li>";
+              }
+              else if (isset($_SESSION['username'])){
+                  print"<li><a 	href='feedback.php' >Feedback</a></li>";
               }
               else{
                   print "<li><a  href='login.php' > Prijava/Registracija</a></li>";
@@ -44,7 +46,7 @@ session_start();
 				</div>
 			</div>
       <?php
-      if(isset($_SESSION['logged_in']) && $_SESSION['logged_in']==true){
+      if(isset($_SESSION['logged_in']) && $_SESSION['logged_in']==true || isset($_SESSION['username'])){
           //Print za admina
           print"
             <form id='dioOdjava' action='login.php' method ='post'>

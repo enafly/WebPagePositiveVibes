@@ -19,7 +19,6 @@ print"
 </div>
 
 <div class='col-8'>
-<h3 id='tekst'> Nije uredu da admin ostavlja feedback na svoju stranicu! </h3>
 			<h3 id='tekst'> Feedback</h3>";
 		 $kom=simplexml_load_file('feedback.xml');
 			$ukupno=count($kom);
@@ -64,7 +63,11 @@ print "</table>
 	}
 }
 
-else{
+else if(isset($_SESSION['username']) && $_SESSION['username']==true){
+		header("Location: feedbackKor.php");
+}
+
+/*
 	print"<div class= 'row'>
 			<div id='glavni' class='col-12'>
 	<div class='col-2' >
@@ -81,9 +84,6 @@ else{
 								<input type='text' id='nickF' name='nickF' class='textStil' tabindex='1' placeholder='Ime ili nick (A-Z a-z 0-9)'>
 								<p class='obav'>*</p>
 								<p id='nickErrF' ></p>
-								<input type='text' id='emailF' name='emailF' class='textStil' tabindex='2' placeholder='E-mail'>
-								<p class='obav'>*</p>
-								<p id='emailErrF' ></p>
 								<textarea rows='10' cols='50' name='komentarF' class='textStil2' id='komentarF' tabindex='3' placeholder='Komentar'></textarea>
 								<p class='obav'>*</p>
 								<p id='komentarErrF' ></p>
@@ -102,20 +102,40 @@ else{
 </div>";
 }
 
+
 if(isset($_REQUEST['posaljiFeedback']))
 {
 	//snimi feedback u xml feedback.xml
-	$komentari = new SimpleXMLElement("feedback.xml",null,true);
 
-	$komentar = $komentari->addChild('komentar');
-	$komentar->addChild('nick', proveri($_REQUEST["nickF"]));
-	$komentar->addChild('email', proveri($_REQUEST["emailF"]));
-	$komentar->addChild('tekstKomentar', proveri($_REQUEST["komentarF"]));
+		$komentari = new SimpleXMLElement("feedback.xml",null,true);
+		$users=simplexml_load_file("users.xml");
 
-	$komentari->asXML('feedback.xml');
+		$komentar = $komentari->addChild('komentar');
+		$komentar->addChild('nick', proveri($_REQUEST["nickF"]));
+		for($i = 0; $i < count($users->user); $i++){
+		  $name = $users->user[$i]->username;
+			if($_SESSION['username']==$name){
+			    $email = $users->user[$i]->email;
+			    $komentar->addChild('email',$email );
+			}
+		}
+		$komentar->addChild('tekstKomentar', proveri($_REQUEST["komentarF"]));
+
+		$komentari->asXML('feedback.xml');
+/*
+		$users=simplexml_load_file("users.xml");
+		for($i = 0; $i < count($users->user); $i++){
+				$name = $users->user[$i]->username;
+				if($_SESSION['username']==$name){
+							$email = $users->user[$i]->email;
+							$komentar->addChild('email',$email );
+							break;
+				}
+		}
+
 
 	header("Location: potvrdaFee.php");
-}
+}*/
 
 include('footer.php');
 ?>

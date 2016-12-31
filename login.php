@@ -57,24 +57,58 @@ if(isset($_REQUEST['login']) ){
         $_SESSION['error']='Popunite polja';
     }
     if(($_REQUEST["userP"] == $logini)){
-		 if(($_REQUEST["passP"] == $password)){
+		 	if(($_REQUEST["passP"] == $password)){
 				//Ovo je da je postavljena sesija
 				$_SESSION['logged_in'] = true;
         //unset password
         unset($mydata->login_details[0]->password);
 				header("Location: opcijeAdmin.php");
+			}
+			else {
+				header("Location: pogresnaSifra.php");
+			}
 		}
-		else {
-			header("Location: pogresnaSifra.php");
+		else if(($_REQUEST["userP"] != $logini)){
+
+
+			$ime=proveri($_REQUEST["userP"]);
+			$passProv=md5($_REQUEST["passP"]);
+			$name = "";
+			$email = "";
+			$pass= "";
+				$users=simplexml_load_file("users.xml");
+//Pokupi podatke iz feedback.xml-a i ispisati za admina koji moze da ih brise!
+			for($i = 0; $i < count($users->user); $i++){
+				$name = $users->user[$i]->username;
+				$name = preg_replace("/[^a-zA-Z0-9_\-]+/", "", $name); // XSS protekcija
+				$email = $users->user[$i]->email;
+				$pass= $users->user[$i]->pass;
+				if($name==$ime){
+					if($pass== $passProv){
+						//sesija za usera
+						$_SESSION['username'] =(string)$users->user[$i]->username;
+
+						header("Location: feedbackKor.php");
+						break;
+					}
+					else{
+							header("Location: pogresnaSifra.php");
+					}
+				}
+				else{
+						//nepostojeciKorisnik
+						header("Location: nepostojeciKorisnik.php");
+					}
+			}
 		}
-	}
+
 		else{
 			session_unset();
 			$_SESSION['logged_in'] = false;
+			$_SESSION['username'] = false;
 			$username="";
 
 			header("Location: nepostojeciKorisnik.php");
-
 		}
 }
 include('footer.php');

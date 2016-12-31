@@ -13,6 +13,7 @@ print"
 
 <h1 id ='dobrodoslica'> Poslan feedback! </h1>
 <h2 id ='dobrodoslica'> Hvala ".(string)$name."! </h2>
+<h3 id ='dobrodoslica'> Ostavite feedback ponovo! </h3>
 
 </div>
 
