@@ -65,6 +65,69 @@ session_start();
         return $data;
   }
 
+  function procitajKorisnike()
+  {
+    $veza= new PDO("mysql:dbname=wt4;host=localhost;charset=utf8","ena","ena");
+    $veza->exec("set names utf8");
+    $rezultat=$veza->query("select id, ime, email, pass from users");
+    if(!$rezultat){
+      $greska=$veza->errorInfo();
+      print"<h1> SQL greska: "-$greska[2]."</h1>";
+      exit();
+    }
+    $users=[];
+    foreach ($rezultat as $korisnik) {
+      $user = new stdClass;
+      $user->id=$korisnik['id'];
+      $user->ime=$korisnik['ime'];
+      $user->email=$korisnik['email'];
+      $user->pass=$korisnik['pass'];
+
+      array_push($users, $user);
+
+    }
+    return $users;
+}
+function procitajFeedback()
+{
+  $veza= new PDO("mysql:dbname=wt4;host=localhost;charset=utf8","ena","ena");
+  $veza->exec("set names utf8");
+  $rezultat=$veza->query("select id, tekst, userID from komentar");
+  if(!$rezultat){
+    $greska=$veza->errorInfo();
+    print"<h1> SQL greska: "-$greska[2]."</h1>";
+    exit();
+  }
+  $komentari=[];
+  foreach ($rezultat as $kom) {
+    $komi= new stdClass;
+    $komi->id=$kom['id'];
+    $komi->tekst=$kom['tekst'];
+    $komi->userID=$kom['userID'];
+
+    array_push($komentari, $komi);
+
+  }
+  return $komentari;
+}
+
+function odTogUseraKom($i){
+  $veza= new PDO("mysql:dbname=wt4;host=localhost;charset=utf8","ena","ena");
+  $veza->exec("set names utf8");
+  $rezultat=$veza->query("select u.id, k.tekst, k.userID from users u, komentar k where k.userID=".$i." ");
+  $komentari=[];
+  foreach ($rezultat as $kom) {
+    $komi= new stdClass;
+    $komi->id=$kom['id'];
+    $komi->tekst=$kom['tekst'];
+    $komi->userID=$kom['userID'];
+
+    array_push($komentari, $komi);
+  }
+  return $komentari;
+}
+
+
    ?>
 
 </header>

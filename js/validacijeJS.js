@@ -127,40 +127,15 @@ function validacijaV()
 
 function validacijaF(){
   var formaF = document.getElementById('FeedbackForma');
-  var 	nickErrF, emailErrF, komentarErrF;
-  nickErrF= document.getElementById('emailErrF');
-  emailErrF= document.getElementById('emailErrF');
+  var komentarErrF;
+
   komentarErrV= document.getElementById('komentarErrF');
 
-
-  var fields = ["nickF", "emailF","komentarF"];
-	var errori =["nickErrF", "emailErrF","komentarErrF"];
-	var i, n = fields.length;
-	var fieldname;
-	for (i = 0; i < n; i++) {
-		fieldname = fields[i];
-		if (formaF[fieldname].value == null || formaF[fieldname].value == ""  || formaF[fieldname].value == "" ) {
-					document.getElementById(errori[i]).innerHTML="Obavezan podatak!";
-					document.getElementById(fieldname).focus();
-	      return false;
-		}
-		document.getElementById(errori[i]).innerHTML="";
-
-	}
-			var validno = document.getElementById(fields[0]).value.match(userRegex);
-			if(validno == null){
-				 document.getElementById(errori[0]).innerHTML="Nepravilan format imena ili nicka!Možete koristiti samo slova i brojeve!" ;
-				 document.getElementById(fields[0]).focus();
-				 return false;
-			 }
-
-			var validnoPass=document.getElementById(fields[1]).value.match(emailRegex);
-			if(validnoPass==null)
-			{
-        document.getElementById(errori[1]).innerHTML = "Pogrešno unesen email!";
-		  	document.getElementById(fields[1]).focus();
-		  	return false;
-			}
-
-  return true;
+  if(komentarF.value == "" || komentarF.value == null){
+    document.getElementById(komentarErrV).innerHTML="Obavezan podatak!";
+    document.getElementById(komentarF).focus();
+    return false;
+  }
+  	document.getElementById(komentarErrV).innerHTML="";
+    return true;
 }

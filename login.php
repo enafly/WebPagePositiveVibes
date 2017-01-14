@@ -50,12 +50,13 @@ else{
 	</div>";
 	print($neLogovan);
 }
-
+//login admin
 if(isset($_REQUEST['login']) ){
     if(empty($_POST["userP"]) || empty($_POST["passP"]))
     {
         $_SESSION['error']='Popunite polja';
     }
+		//admin login
     if(($_REQUEST["userP"] == $logini)){
 		 	if(($_REQUEST["passP"] == $password)){
 				//Ovo je da je postavljena sesija
@@ -68,41 +69,33 @@ if(isset($_REQUEST['login']) ){
 				header("Location: pogresnaSifra.php");
 			}
 		}
+		//user login
 		else if(($_REQUEST["userP"] != $logini)){
-
 
 			$ime=proveri($_REQUEST["userP"]);
 			$passProv=md5($_REQUEST["passP"]);
 			$name = "";
 			$email = "";
 			$pass= "";
-				$users=simplexml_load_file("users.xml");
-//Pokupi podatke iz feedback.xml-a i ispisati za admina koji moze da ih brise!
-			for($i = 0; $i < count($users->user); $i++){
-				$name = $users->user[$i]->username;
-				$name = preg_replace("/[^a-zA-Z0-9_\-]+/", "", $name); // XSS protekcija
-				$email = $users->user[$i]->email;
-				$pass= $users->user[$i]->pass;
-				if($name==$ime){
-					if($pass== $passProv){
-						//sesija za usera
-						$_SESSION['username'] =(string)$users->user[$i]->username;
-
-						header("Location: feedbackKor.php");
-						break;
-					}
-					else{
-							header("Location: pogresnaSifra.php");
-					}
+			//baza upisivanje
+			$usersdb=procitajKorisnike();
+			foreach ($usersdb as $user) {
+				if(strcmp($user->ime,$ime)==0){
+						if(strcmp($user->pass,$passProv)==0){
+							$_SESSION['username'] =(string)$user->ime;
+							header("Location: feedbackKor.php");
+						}
+						else{
+								header("Location: pogresnaSifra.php");
+						}
 				}
 				else{
-						//nepostojeciKorisnik
-						header("Location: nepostojeciKorisnik.php");
-					}
-			}
+							//nepostojeciKorisnik
+							header("Location: nepostojeciKorisnik.php");
+				}
 		}
-
-		else{
+	}
+	else{
 			session_unset();
 			$_SESSION['logged_in'] = false;
 			$_SESSION['username'] = false;
